@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Page Not Found</title>
+    <%- include("./partials/head") %>
+  </head>
+  <body>
+    <%- include("./partials/navBar") %>
+
+    <div class="container text-center">
+      <h1 class="display-3 text-danger fw-bold" style="margin-top: 4rem; margin-bottom: 3rem;">404</h1>
+      <h2 class="text-dark display-6 fw-semibold my-4">Oops! Page Not Found</h2>
+
+      <% if (locals.error) { %>
+        <p class="text-danger mx-auto text-center" style="max-width: 600px; font-size: 1.5rem; margin-top: 3rem; ">
+          <%= error %>
+        </p>
+      <% } %>
+      <a href="/" class="btn btn-primary p-2 my-4">Go Back Home</a>
+    </div>
+
+    <%- include("./partials/footer") %>
+    <%- include("./partials/script") %>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publications</title>
+    <%- include("./partials/head") %>
+  </head>
+  <body>
+    <%- include("./partials/navBar") %> 
+
+    <div class="container mt-4">
+      <h1 class="display-4 fw-bold text-center text-primary">Publications</h1>
+      <p class="lead text-muted text-center" style="font-size: 1.75rem">
+        Explore our latest research contributions
+      </p>
+
+      <div class="row row-cols-3 g-4 mb-4">
+        <% if (locals.publications) { %> <% publications.forEach(publication =>
+        { %>
+        <div class="col">
+          <div
+            class="card h-100 shadow-lg border-0 rounded"
+            style="background-color: #f9f9f9"
+          >
+            <div class="card-body">
+              <h5 class="card-title text-dark fw-bold">
+                <span style="color: #4da3ff"
+                  ><%= publication.doc_number %>.</span>
+                <%= publication.title %>
+              </h5>
+              <p class="card-text text-muted mb-1">
+                <strong>Author(s):</strong> <%= publication.author %>
+              </p>
+              <p class="card-text text-muted mb-1">
+                <strong>Year:</strong> <%= publication.year %>
+              </p>
+              <p class="card-text text-muted">
+                <strong>Journal:</strong> <%= publication.journal %>
+              </p>
+            </div>
+            <div class="card-footer text-center">
+              <a
+                href="<%= publication.journal_link %>"
+                target="_blank"
+                class="btn btn-primary btn-sm"
+                >Read More</a>
+            </div>
+          </div>
+        </div>
+        <% }) %> <% } %>
+      </div>
+    </div>
+
+    <%- include("./partials/footer") %> <%- include("./partials/script") %>
+  </body>
+</html>

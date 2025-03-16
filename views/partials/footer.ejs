@@ -1,0 +1,43 @@
+<footer class="bg-dark text-white py-3">
+    <style>
+      /* Ensure the footer sticks to the bottom */
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Full viewport height */
+        margin: 0; /* Remove default margin */
+      }
+      .container {
+        flex: 1; /* Push the footer to the bottom if content is short */
+      }
+      footer {
+        background-color: #131921; /* Dark theme color */
+        color: #f9f9f9; /* Light text */
+        text-align: center;
+        padding: 1rem 0;
+      }
+      .footer-links a {
+        color: #f9f9f9; /* Light text */
+        text-decoration: none; /* Remove underline */
+        margin: 0 10px; /* Add spacing between links */
+        font-size: 0.9rem;
+      }
+      .footer-links a:hover {
+        text-decoration: underline; /* Underline on hover */
+      }
+    </style>
+
+    <div class="container text-center">
+      <p class="mb-0 footer-links" style="font-size: 0.9rem;">
+        <a href="/">Home</a> |
+        <a href="/publications">Publications</a> |
+        <a href="/group_members">Group Members</a> |
+        <a href="/research">Research</a> |
+        <a href="/seminars">Seminars</a> |
+        <a href="/links">Links</a>
+      </p>
+      <p class="mb-0 text-secondary" style="font-size: 0.9rem">
+        &copy; 2011 Hamelberg Research Group
+      </p>
+    </div>
+  </footer>

@@ -1,0 +1,67 @@
+<nav
+  class="navbar bg-body-tertiary sticky-top py-1"
+  data-bs-theme="dark"
+>
+  <div
+    class="d-flex justify-content-around align-items-center w-100"
+    id="navbarNav"
+    style="padding-left: 1.5rem; padding-right: 1.5rem;"
+  >
+    <div class="d-flex align-items-center">
+      <div class="me-4">
+        <h3
+          class="text-center text-light"
+          style="font-family: 'Times New Roman'"
+        >
+          DEPARTMENT OF
+        </h3>
+        <h3
+          class="text-center text-light"
+          style="font-family: 'Times New Roman'"
+        >
+          CHEMISTRY
+        </h3>
+      </div>
+      <a href="/">
+        <img src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/GSU_Logo.png" style="max-width: 110px" />
+      </a>
+    </div>
+    <ul class="navbar-nav d-flex flex-row gap-4" style="font-size: 1.25rem">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/publications">Publications</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/group_members">Group Members</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/former_members">Former Members</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/research">Research</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/gallery">Gallery</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/links">Links</a>
+      </li> 
+      <li class="nav-item">
+        <a class="nav-link" href="/contact_us">Contact Us</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let currentPath = window.location.pathname;
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      if (link.getAttribute("href") === currentPath) {
+        link.classList.add("active"); // Bootstrap will handle the styling
+      }
+    });
+  });
+</script>

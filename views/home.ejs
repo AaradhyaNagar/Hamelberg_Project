@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <%- include("./partials/head") %>
+  </head>
+  <body>
+    <%- include("./partials/navBar") %>
+    <div class="container">
+      <h1 class="display-4 fw-bold text-primary text-center my-3">
+        Hamelberg Group
+      </h1>
+      <p class="lead text-muted text-center m-2" style="font-size: 1.75rem">
+        Exploring Cell Signaling at the Atomic Level
+      </p>
+      <!-- Bootstrap Grid for Image + Text -->
+      <div class="row align-items-center my-4"> 
+        <div class="col text-center">
+          <img
+            src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/jpcb_cover.jpg"
+            class="img-fluid rounded shadow-lg"
+            style="max-height: 500px"
+            alt="Research Cover"
+          />
+        </div>
+        <div class="col" style="font-size: 1.25rem">
+          <p class="content" style="line-height: 1.8;">
+            Our research delves into the intricate world of subcellular
+            processes, leveraging advanced computational techniques to unravel
+            the complexities of cell signaling. By simulating molecular
+            interactions, we aim to decode the mechanisms that govern biological
+            functions at an atomic scale.
+          </p>
+
+          <p class="content" style="line-height: 1.8">
+            Disruptions in these pathways can lead to severe conditions such as
+            cancer and other diseases. Through a fusion of statistical
+            mechanics, quantum chemistry, and cutting-edge simulations, we
+            explore the fundamental principles—like allostery—that drive
+            cellular behavior, complementing experimental research with deep
+            theoretical insights.
+          </p>
+
+          <p class="content text-primary fw-semibold" style="line-height: 1.8">
+            Our mission is to bridge the gap between computation and biology,
+            transforming complex molecular interactions into actionable
+            scientific discoveries.
+          </p>
+        </div>
+      </div>
+      <div class="my-5">
+        <hr
+          class="w-100 mx-auto border-primary opacity-100"
+          style="height: 3px; border-radius: 5px"
+        />
+      </div>
+
+      <h1 class="display-5 fw-bold text-center my-3" style="color: #1f75fe">
+        Recent Selected Publications
+      </h1>
+
+      <div class="container">
+        <ul class="list-group list-group-flush">
+          <% if (locals.publications) { %> <% publications.slice(0,
+          6).forEach(publication => { %>
+          <li class="list-group-item px-0 py-3">
+            <h5 class="fw-bold mb-1">
+              <span>&#9702;</span>
+              <%= publication.title %>
+            </h5>
+            <p class="mb-0 text-muted">
+              <strong>Author(s):</strong> <%= publication.author %> |
+              <strong>Year:</strong> <%= publication.year %> |
+              <strong>Journal:</strong> <%= publication.journal %>
+            </p>
+            <a
+              href="<%= publication.journal_link %>"
+              target="_blank"
+              class="text-decoration-none fw-semibold text-primary"
+            >
+              Read More →
+            </a>
+          </li>
+          <% }) %> <% } %>
+        </ul>
+      </div>
+    </div>
+
+    <%- include("./partials/footer") %> <%- include("./partials/script") %>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us</title>
+    <%- include("./partials/head") %>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+    />
+    <style>
+      .email-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("./partials/navBar") %>
+
+    <div class="container my-5">
+      <h1 class="display-4 fw-bold text-center text-primary">Contact Us</h1>
+      <p class="lead text-muted text-center mb-4" style="font-size: 1.5rem">
+        Get in touch with us for any inquiries or information.
+      </p>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="p-4 rounded shadow-sm" style="background-color: #f8f9fa">
+            <h3 class="fw-bold text-primary">Contact Information</h3>
+            <hr />
+
+            <p class="mb-3" style="font-size: 1.2rem; line-height: 1.8">
+              <i class="fa-solid fa-map-location-dot text-primary me-2"></i>
+              <strong>Mailing Address:</strong><br />
+              Department of Chemistry<br />
+              Georgia State University<br />
+              P. O. BOX 3965<br />
+              Atlanta, GA 30302-3965
+            </p>
+
+            <p class="mb-3" style="font-size: 1.2rem; line-height: 1.8">
+              <i class="fa-solid fa-building text-primary me-2"></i>
+              <strong>Physical Address:</strong><br />
+              519 Science Annex
+            </p>
+
+            <p class="mb-3" style="font-size: 1.2rem; line-height: 1.8">
+              <i class="fa-solid fa-phone text-primary me-2"></i>
+              <strong>Phone:</strong> 404-413-5564 (office)
+            </p>
+
+            <p class="mb-0" style="font-size: 1.2rem; line-height: 1.8">
+              <i class="fa-solid fa-envelope text-primary me-2"></i>
+              <strong>Email:</strong>
+              <a
+                href="mailto:dhamelberg@gsu.edu"
+                class="text-decoration-none fw-bold"
+                style="color: #007bff"
+              >
+                <span class="email-link"> dhamelberg@gsu.edu </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include("./partials/footer") %> <%- include("./partials/script") %>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research</title>
+    <%- include("./partials/head") %>
+    <style>
+      .hover-zoom {
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .hover-zoom:hover {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("./partials/navBar") %>
+
+    <div class="container my-4">
+      <h1 class="display-4 fw-bold text-center text-primary">Research</h1>
+      <p class="lead text-muted text-center mt-2 mb-4" style="font-size: 2rem">
+        Theory and Simulation of Biomolecular Interactions and Flexibility
+      </p>
+
+      <div>
+        <div class="d-flex align-items-center gap-5 my-5">
+          <div
+            style="font-size: 1.25rem; text-align: justify; line-height: 1.8"
+          >
+            The current understanding of biomolecular interactions that underlie
+            normal and aberrant sub-cellular processes is limited. The role of
+            these interactions in cancer and in a host of viral- and
+            bacterial-caused diseases is even less well understood at the
+            atomistic level. Many biomolecular interactions occur at the level
+            of post-transcriptional gene regulation involving intricate networks
+            of interacting protein and RNA molecules. The research in our group
+            focuses on the application and development of theoretical and
+            computational methods with the intent of gaining an in-depth
+            understanding of biological interactions and functions. In these
+            endeavors, we use simulation-based approaches, and related
+            statistical mechanics, classical and quantum mechanical methods.
+          </div>
+          <div class="text-center">
+            <img
+              src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/toc-c.jpg"
+              alt="Research Image 1"
+              style="max-height: 400px"
+              class="hover-zoom"
+            />
+          </div>
+        </div>
+
+        <div
+          class="d-flex align-items-center gap-5 my-5"
+          style="font-size: 1.25rem; text-align: justify; line-height: 1.8"
+        >
+          <div class="text-center">
+            <img
+              src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/hiv.png"
+              alt="Research Image 2"
+              style="max-height: 400px"
+              class="hover-zoom"
+            />
+          </div>
+          <div>
+            We also use advanced simulation methods to study the dynamic
+            fluctuations of biomolecules. Mechanisms of biomolecular interaction
+            are not as simple as a rigid lock-and-key model, but are rather
+            modulated and optimized by some amount of flexibility. In order to
+            perform their catalytic activities, enzymes generally have to
+            undergo structural transitions upon interaction with other proteins
+            or ligands and upon release of products. The opening and closing of
+            the flaps that act as gates to the active site of HIV-1 protease is
+            a recognizable example. Also, conformational transitions in one part
+            of a protein can modulate the affinity of its binding partners due
+            to changes in the structural features within the binding site. There
+            must therefore be some form of structural "communication" between
+            the distant sites, and this necessitates an explanation that in some
+            way invokes dynamics.
+          </div>
+        </div>
+
+        <div
+          class="d-flex align-items-center gap-5 my-5"
+          style="font-size: 1.25rem; text-align: justify; line-height: 1.8"
+        >
+          <div>
+            Furthermore, the general understanding of hydration effects at
+            binding sites and interfaces in biomolecular interactions is also of
+            interest in our group. Water molecules make up an integral part of
+            protein structures, while assisting in catalysis, providing
+            stability and controlling the plasticity of binding sites. They are
+            characteristically present in the interfaces found in
+            protein-ligand, protein-protein, protein-carbohydrate,
+            protein-nucleic acid, and nucleic acid-ligand complexes. We use
+            MD-based simulation techniques and free energy calculations to gain
+            insight into the nature of these water molecules. The research in
+            our group benefits from locally available supercomputers and compute
+            clusters operated by Research Computing at Georgia State University
+            and a network of high-performance computers in our group.
+          </div>
+          <div class="text-center">
+            <img
+              src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/rough.png"
+              alt="Research Image 3"
+              style="max-height: 450px"
+              class="hover-zoom"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include("./partials/footer") %> <%- include("./partials/script") %>
+  </body>
+</html>

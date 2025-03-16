@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery</title>
+    <%- include("./partials/head") %>
+
+    <style>
+      .custom-link {
+        text-decoration: none;
+      }
+
+      .custom-link:hover {
+        text-decoration: underline;
+      }
+
+      .hover-zoom {
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .hover-zoom:hover {
+        transform: scale(1.05);
+      }
+
+      .hover-gif {
+        transition: transform 0.3s ease-in-out;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .hover-gif:hover {
+        content: url("https://i.imgur.com/KHzdUJw.gif");
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("./partials/navBar") %>
+    <div class="container my-4">
+      <h1 class="display-4 fw-bold text-center text-primary">Gallery</h1>
+      <p class="lead text-muted text-center m-2" style="font-size: 1.75rem">
+        A collection of visuals showcasing our work and research.
+      </p>
+      <div class="d-flex align-items-center justify-content-between my-3 mx-4 ">
+        <div class="text-center">
+          <p class="lead text-muted" style="font-size: 1.5rem">
+            Molecular dynamics simulation of the SAM-II riboswitch complex
+          </p>
+          <a
+            href="https://academic.oup.com/nar/article/38/4/1392/3112466"
+            target="_blank"
+            class="custom-link fw-bold"
+            style="font-size: 1.5rem"
+          >
+            Nucleic Acids Research, (2010) 38, 1392-1400
+          </a>
+        </div>
+        <div class="text-center">
+          <img
+            src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/md.png"
+            alt="Molecular Dynamics Simulation"
+            class="hover-gif"
+            style="max-height: 500px; min-width: 500px"
+          />
+          
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-between gap-4 mb-5">
+        <div class="text-center">
+          <img
+            src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/waterStructure.jpg"
+            alt="Hydrogen Bonding Network"
+            class="hover-zoom"
+            style="max-height: 290px;"
+          />
+        </div>
+        <div class="text-center">
+          <p class="lead text-muted" style="font-size: 1.5rem">
+            Hydrogen bonding network of surrounding water molecules forming a
+            cage around peptide molecule
+          </p>
+          <a
+            href="https://pubs.acs.org/doi/10.1021/ct100183s"
+            target="_blank"
+            class="custom-link fw-bold"
+            style="font-size: 1.5rem"
+          >
+            Journal of Chemical Theory and Computation,<br />
+            <span style="font-size: 1.5rem"
+              >(2010) 6, 2591–2597</span
+            >
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <%- include("./partials/footer") %> <%- include("./partials/script") %>
+  </body>
+</html>
