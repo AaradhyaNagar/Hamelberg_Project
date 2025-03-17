@@ -14,12 +14,12 @@ staticRouter.route("/").get(async (req, res) => {
 });
 
 staticRouter.route("/former_members").get(async (req, res) => {
-  const allFormerMembers = await FormerMembers.find({});
+  const allFormerMembers = await FormerMembers.find({}).sort({ _id: 1 });
   return res.render("former_members", { formerMembers: allFormerMembers });
 });
 
 staticRouter.route("/group_members").get(async (req, res) => {
-  const allGroupMembers = await GroupMembers.find({});
+  const allGroupMembers = await GroupMembers.find({}).sort({ _id: 1 });
   return res.render("group_members", { groupMembers: allGroupMembers });
 });
 
@@ -32,7 +32,7 @@ staticRouter.route("/publications").get(async (req, res) => {
 staticRouter.route("/links").get(async (req, res) => {
   const allJournals = await Journals.find({}).sort({ journal_number: -1 });
 
-  return res.render("links",{journals : allJournals});
+  return res.render("links", { journals: allJournals });
 });
 
 staticRouter.route("/contact_us").get((req, res) => {
