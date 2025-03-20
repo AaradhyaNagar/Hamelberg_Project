@@ -23,13 +23,11 @@
         transform: scale(1.05);
       }
 
-      .hover-gif {
+      .hover-video {
         transition: transform 0.3s ease-in-out;
-        transition: opacity 0.3s ease-in-out;
       }
 
-      .hover-gif:hover {
-        content: url("https://i.imgur.com/KHzdUJw.gif");
+      .hover-video:hover {
         transform: scale(1.05);
       }
     </style>
@@ -41,7 +39,7 @@
       <p class="lead text-muted text-center m-2" style="font-size: 1.75rem">
         A collection of visuals showcasing our work and research.
       </p>
-      <div class="d-flex align-items-center justify-content-between my-3 mx-4 ">
+      <div class="d-flex align-items-center justify-content-between my-3 mx-4">
         <div class="text-center">
           <p class="lead text-muted" style="font-size: 1.5rem">
             Molecular dynamics simulation of the SAM-II riboswitch complex
@@ -56,13 +54,16 @@
           </a>
         </div>
         <div class="text-center">
-          <img
-            src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/md.png"
-            alt="Molecular Dynamics Simulation"
-            class="hover-gif"
-            style="max-height: 500px; min-width: 500px"
-          />
-          
+          <video
+            class="hover-video"
+            style="max-height: 500px;"
+            onmouseover="this.play()"
+            onmouseout="this.pause(); this.currentTime = 0;"
+            muted
+          >
+            <source src="https://i.imgur.com/KHzdUJw.mp4" type="video/mp4" />
+            Molecular Dynamics Simulation
+          </video>
         </div>
       </div>
 
@@ -72,7 +73,7 @@
             src="https://cdn.jsdelivr.net/gh/AaradhyaNagar/Hamelberg_Public_Assets/images/waterStructure.jpg"
             alt="Hydrogen Bonding Network"
             class="hover-zoom"
-            style="max-height: 290px;"
+            style="max-height: 290px"
           />
         </div>
         <div class="text-center">
@@ -87,9 +88,7 @@
             style="font-size: 1.5rem"
           >
             Journal of Chemical Theory and Computation,<br />
-            <span style="font-size: 1.5rem"
-              >(2010) 6, 2591–2597</span
-            >
+            <span style="font-size: 1.5rem">(2010) 6, 2591–2597</span>
           </a>
         </div>
       </div>
