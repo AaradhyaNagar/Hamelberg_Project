@@ -23,10 +23,42 @@ staticRouter.route("/group_members").get(async (req, res) => {
   return res.render("group_members", { groupMembers: allGroupMembers });
 });
 
-staticRouter.route("/publications").get(async (req, res) => {
-  const allPublications = await Publication.find({}).sort({ doc_number: -1 });
+// Search by Title
+staticRouter.get("/publications/search-by-title", async (req, res) => {
+  const { title } = req.query;
 
-  return res.render("publications", { publications: allPublications });
+  const publications = await Publication.find({
+    title: { $regex: title, $options: "i" },
+  });
+
+  res.render("publications", { publications });
+});
+
+// Filter by Year, Author, Journal
+staticRouter.get("/publications", async (req, res) => {
+  const { year, author, journal } = req.query;
+
+  let filter = {};
+  if (year) filter.year = year;
+  if (author) filter.author = author;
+  if (journal) filter.journal = journal;
+
+  const publications = await Publication.find(filter);
+
+  res.render("publications", { publications });
+});
+
+// API for Live Search Suggestions
+staticRouter.get("/search-titles", async (req, res) => {
+  const { query } = req.query;
+  if (!query) return res.json([]);
+
+  const results = await Publication.find(
+    { title: { $regex: query, $options: "i" } },
+    { title: 1, _id: 0 }
+  ).limit(10);
+
+  res.json(results);
 });
 
 staticRouter.route("/links").get(async (req, res) => {
