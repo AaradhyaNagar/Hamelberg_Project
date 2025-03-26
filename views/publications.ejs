@@ -123,6 +123,17 @@
       >
         <i class="fa-solid fa-filter"></i>
       </button>
+      <div
+        id="suggestions"
+        class="list-group position-absolute bg-white shadow-lg rounded"
+        style="
+          overflow: hidden;
+          z-index: 1000;
+          max-width: 40.5rem;
+          margin-top: 3.25rem;
+          margin-right: 7.25rem;
+        "
+      ></div>
     </div>
 
     <div class="container mt-4">
@@ -132,8 +143,8 @@
       </p>
 
       <div class="row row-cols-3 g-4 mb-4">
-        <% if (locals.publications) { %> <% publications.forEach(publication =>
-        { %>
+        <% if (locals.publications && publications.length > 0) { %> <%
+        publications.forEach(publication => { %>
         <div class="col">
           <div
             class="card h-100 shadow-lg border-0 rounded"
@@ -166,14 +177,21 @@
             </div>
           </div>
         </div>
-        <% }) %> <% } %>
+        <% }) %> <% } else { %>
+        <div class="w-100 d-flex align-items-center justify-content-center">
+          <div class="text-center p-4">
+            <h4 class="mt-3 fw-bold text-danger">No Publications Found</h4>
+            <p class="text-muted fs-5">We couldn’t find any publications</p>
+            <p class="text-muted fs-5">Please check again later.</p>
+          </div>
+        </div>
+        <% } %>
       </div>
     </div>
 
     <%- include("./partials/footer") %> <%- include("./partials/script") %>
     <script>
       function toggleSearchContainer() {
-        console.log("hello world");
         const searchSection = document.getElementById("search-section");
         const filterSection = document.getElementById("filter-section");
 
@@ -201,10 +219,6 @@
           const response = await fetch(`/suggestions?searchText=${searchText}`);
           const data = await response.json(); // Convert response to JSON
 
-          console.log(searchText);
-          console.log(response);
-          console.log(data);
-          
           // Generate clickable suggestion items dynamically
           suggestionsBox.innerHTML = data
             .map(
