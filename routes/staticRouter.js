@@ -23,42 +23,45 @@ staticRouter.route("/group_members").get(async (req, res) => {
   return res.render("group_members", { groupMembers: allGroupMembers });
 });
 
-// Search by Title
 staticRouter.get("/publications/search-by-title", async (req, res) => {
-  const { title } = req.query;
+  const publicationByTitle = await Publication.find({
+    // $regex : searchText; It searches for titles that contains the "searchText" string
+    //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
+    title: { $regex: req.query.title, $options: "i" },
+  }).sort({ doc_number: -1 });
 
-  const publications = await Publication.find({
-    title: { $regex: title, $options: "i" },
-  });
-
-  res.render("publications", { publications });
-});
-
-// Filter by Year, Author, Journal
-staticRouter.get("/publications", async (req, res) => {
-  const { year, author, journal } = req.query;
-
-  let filter = {};
-  if (year) filter.year = year;
-  if (author) filter.author = author;
-  if (journal) filter.journal = journal;
-
-  const publications = await Publication.find(filter);
-
-  res.render("publications", { publications });
+  res.render("publications", { publications: publicationByTitle });
 });
 
 // API for Live Search Suggestions
-staticRouter.get("/search-titles", async (req, res) => {
-  const { query } = req.query;
-  if (!query) return res.json([]);
+staticRouter.get("/suggestions", async (req, res) => {
+  // Extract the 'searchText' parameter from the request URL (e.g., /suggestions?searchText=example)
+  const searchText = req.query.searchText;
 
-  const results = await Publication.find(
-    { title: { $regex: query, $options: "i" } },
-    { title: 1, _id: 0 }
-  ).limit(10);
+  // If the query is empty (user hasn't typed anything), return an empty array
+  if (!searchText) return res.json([]);
 
-  res.json(results);
+  try {
+    // $regex : searchText; It searches for titles that contains the "searchText" string
+    //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
+    const results = await Publication.find(
+      { title: { $regex: searchText, $options: "i" } },
+      // If { title : 1 } is not mentioned it will return the whole database object with the _id
+      // To make the response lightweight, we omit the _id with { _id : 0 }
+      { title: 1, _id: 0 }
+    ).limit(5);
+
+     res.json(results);
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+staticRouter.get("/publications", async (req, res) => {
+  const allPublications = await Publication.find({}).sort({ doc_number: -1 });
+
+  res.render("publications", { publications: allPublications });
 });
 
 staticRouter.route("/links").get(async (req, res) => {

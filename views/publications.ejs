@@ -20,8 +20,35 @@
       }
 
       .search-container:focus-within {
-        transform: scale(1.01);
+        transform: scale(1.02);
         border: 2px solid #6cb2eb;
+        border-radius: 6px;
+      }
+
+      .filter-btn {
+        display: inline-flex !important; /* Ensures transform applies */
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease-in-out !important;
+      }
+
+      .filter-btn:hover {
+        transform: scale(1.1) !important; /* Force scaling on hover */
+      }
+
+      .filter-dropdown {
+        min-width: 15rem; /* Adjust width */
+        padding: 0.6rem;
+        border: none;
+        border-radius: 5px;
+        background-color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out, border 0.2s ease-in-out;
+      }
+
+      .filter-dropdown:focus {
+        outline: none;
         border-radius: 6px;
       }
     </style>
@@ -29,29 +56,71 @@
   <body>
     <%- include("./partials/navBar") %>
     <div
-      class="p-4 d-flex justify-content-center"
+      class="p-3 d-flex justify-content-center"
       style="background-color: #2b3035"
     >
-      <div class="search-container d-flex align-items-center me-3">
-        <input
-          type="text"
-          id="title"
-          name="title"
-          class="p-2 search-box"
-          style="width: 750px; border-radius: 5px 0px 0px 5px; border: none"
-          placeholder="Search For Publications..."
-          autocomplete="off"
-          oninput="fetchSuggestions()"
-        />
-        <button
-          type="submit"
-          class="btn btn-primary px-3 py-2"
-          style="border-radius: 0px 5px 5px 0px"
-        >
-          <i class="fas fa-search"></i>
-        </button>
+      <!-- Search Container -->
+      <div id="search-section">
+        <form action="/publications/search-by-title" method="GET">
+          <div class="search-container d-flex align-items-center me-3">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="p-2 search-box"
+              style="
+                min-width: 40rem;
+                border-radius: 5px 0px 0px 5px;
+                border: none;
+              "
+              placeholder="Search For Publications..."
+              autocomplete="off"
+              oninput="fetchSuggestions()"
+            />
+            <button
+              type="submit"
+              class="btn btn-primary px-3 py-2"
+              style="border-radius: 0px 5px 5px 0px"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
       </div>
-      <button type="submit" class="btn btn-outline-light px-3 py-2">
+
+      <!-- New Div (Initially Hidden) -->
+      <div id="filter-section" class="d-none d-flex gap-3 me-3">
+        <select class="filter-dropdown">
+          <option selected disabled>Select Year</option>
+          <option>All</option>
+          <option>2024</option>
+          <option>2023</option>
+          <option>2022</option>
+        </select>
+
+        <select class="filter-dropdown">
+          <option selected disabled>Select Journal</option>
+          <option>All</option>
+          <option>Journal A</option>
+          <option>Journal B</option>
+          <option>Journal C</option>
+        </select>
+
+        <select class="filter-dropdown">
+          <option selected disabled>Select Author</option>
+          <option>All</option>
+          <option>Author X</option>
+          <option>Author Y</option>
+          <option>Author Z</option>
+        </select>
+      </div>
+
+      <!-- Filter Button -->
+      <button
+        type="button"
+        class="btn btn-outline-light px-3 py-2 filter-btn"
+        onclick="toggleSearchContainer()"
+      >
         <i class="fa-solid fa-filter"></i>
       </button>
     </div>
@@ -61,65 +130,6 @@
       <p class="lead text-muted text-center" style="font-size: 1.75rem">
         Explore our latest research contributions
       </p>
-
-      <!-- Search by Title -->
-      <form action="/publications/search-by-title" method="GET" class="mb-3">
-        <div class="position-relative">
-          <input
-            type="text"
-            id="title"
-            name="title"
-            class="form-control"
-            placeholder="Search For Publications..."
-            autocomplete="off"
-            oninput="fetchSuggestions()"
-          />
-          <div
-            id="suggestions"
-            class="list-group position-absolute w-100 bg-white shadow-lg"
-            style="z-index: 1000"
-          ></div>
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">
-          Search by Title
-        </button>
-      </form>
-
-      <!-- Filter by Year, Author, Journal -->
-      <form action="/publications" method="GET" class="mb-3">
-        <div class="row">
-          <div class="col-md-4">
-            <label for="year">Year:</label>
-            <select name="year" id="year" class="form-control">
-              <option value="">All</option>
-              <% publications.forEach(pub => { %>
-              <option value="<%= pub.year %>"><%= pub.year %></option>
-              <% }) %>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label for="author">Author:</label>
-            <select name="author" id="author" class="form-control">
-              <option value="">All</option>
-              <% publications.forEach(pub => { %>
-              <option value="<%= pub.author %>"><%= pub.author %></option>
-              <% }) %>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label for="journal">Journal:</label>
-            <select name="journal" id="journal" class="form-control">
-              <option value="">All</option>
-              <% publications.forEach(pub => { %>
-              <option value="<%= pub.journal %>"><%= pub.journal %></option>
-              <% }) %>
-            </select>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-success mt-2">
-          Filter Results
-        </button>
-      </form>
 
       <div class="row row-cols-3 g-4 mb-4">
         <% if (locals.publications) { %> <% publications.forEach(publication =>
@@ -162,35 +172,58 @@
 
     <%- include("./partials/footer") %> <%- include("./partials/script") %>
     <script>
-      async function fetchSuggestions() {
-        const query = document.getElementById("title").value.trim();
-        const suggestionsBox = document.getElementById("suggestions");
+      function toggleSearchContainer() {
+        console.log("hello world");
+        const searchSection = document.getElementById("search-section");
+        const filterSection = document.getElementById("filter-section");
 
-        if (query.length < 2) {
-          suggestionsBox.innerHTML = "";
-          return;
+        if (searchSection.style.display === "none") {
+          searchSection.style.display = "block"; // Show search
+          filterSection.classList.add("d-none"); // Hide filter section
+        } else {
+          searchSection.style.display = "none"; // Hide search
+          filterSection.classList.remove("d-none"); // Show filter section
         }
+      }
+    </script>
+
+    <script>
+      // Function to fetch search suggestions based on user input
+      async function fetchSuggestions() {
+        const searchText = document.getElementById("title").value.trim(); // Get user input
+        const suggestionsBox = document.getElementById("suggestions"); // Get the suggestions container
+
+        // If input is less than 2 characters, clear the suggestions and stop fetching
+        if (searchText.length < 2) return (suggestionsBox.innerHTML = "");
 
         try {
-          const response = await fetch(`/search-titles?query=${query}`);
-          const data = await response.json();
+          // Send an asynchronous GET request to the server for suggestions
+          const response = await fetch(`/suggestions?searchText=${searchText}`);
+          const data = await response.json(); // Convert response to JSON
 
+          console.log(searchText);
+          console.log(response);
+          console.log(data);
+          
+          // Generate clickable suggestion items dynamically
           suggestionsBox.innerHTML = data
             .map(
-              (item) =>
-                `<a href="#" class="list-group-item list-group-item-action" onclick="selectTitle('${item.title}')">${item.title}</a>`
+              ({ title }) =>
+                `<a href="#" class="list-group-item" onclick="selectTitle('${title}')">${title}</a>`
             )
-            .join("");
+            .join(""); // Join array into a single HTML string
 
+          // Show the dropdown only if there are suggestions, otherwise hide it
           suggestionsBox.style.display = data.length ? "block" : "none";
         } catch (error) {
-          console.error("Error fetching suggestions:", error);
+          console.error("Error fetching suggestions:", error); // Log errors in case of failure
         }
       }
 
+      // Function to handle suggestion selection
       function selectTitle(title) {
-        document.getElementById("title").value = title;
-        document.getElementById("suggestions").innerHTML = "";
+        document.getElementById("title").value = title; // Set the selected title in the input field
+        document.getElementById("suggestions").innerHTML = ""; // Clear the suggestions dropdown
       }
     </script>
   </body>
