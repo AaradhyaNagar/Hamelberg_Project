@@ -7,6 +7,14 @@ const { GroupMembers } = require("../models/group_members");
 const { FormerMembers } = require("../models/former_members");
 const { Journals } = require("../models/journals");
 
+const {
+  handleSearchByTitle,
+  handleLiveSuggestions,
+  handleFindYears,
+  handleFindAuthors,
+  handleFindJournals,
+} = require("../controllers/search");
+
 staticRouter.route("/").get(async (req, res) => {
   const allPublications = await Publication.find({}).sort({ doc_number: -1 });
 
@@ -24,44 +32,23 @@ staticRouter.route("/group_members").get(async (req, res) => {
 });
 
 staticRouter.get("/publications/search-by-title", async (req, res) => {
-  const publicationByTitle = await Publication.find({
-    // $regex : searchText; It searches for titles that contains the "searchText" string
-    //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
-    title: { $regex: req.query.title, $options: "i" },
-  }).sort({ doc_number: -1 });
-
+  const title = req.query.title;
+  const publicationByTitle = await handleSearchByTitle(title);
   res.render("publications", { publications: publicationByTitle });
-});
-
-// API for Live Search Suggestions
-staticRouter.get("/suggestions", async (req, res) => {
-  // Extract the 'searchText' parameter from the request URL (e.g., /suggestions?searchText=example)
-  const searchText = req.query.searchText;
-
-  // If the query is empty (user hasn't typed anything), return an empty array
-  if (!searchText) return res.json([]);
-
-  try {
-    // $regex : searchText; It searches for titles that contains the "searchText" string
-    //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
-    const results = await Publication.find(
-      { title: { $regex: searchText, $options: "i" } },
-      // If { title : 1 } is not mentioned it will return the whole database object with the _id
-      // To make the response lightweight, we omit the _id with { _id : 0 }
-      { title: 1, _id: 0 }
-    ).limit(5);
-
-     res.json(results);
-  } catch (error) {
-    console.error("Error fetching suggestions:", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
 });
 
 staticRouter.get("/publications", async (req, res) => {
   const allPublications = await Publication.find({}).sort({ doc_number: -1 });
+  const allDistinctYears = await handleFindYears();
+  const allDistinctAuthors = await handleFindAuthors();
+  const allDistinctJournals = await handleFindJournals();
 
-  res.render("publications", { publications: allPublications });
+  return res.render("publications", {
+    publications: allPublications,
+    distinctYears: allDistinctYears,
+    distinctAuthors: allDistinctAuthors,
+    distinctJournals: allDistinctJournals,
+  });
 });
 
 staticRouter.route("/links").get(async (req, res) => {
@@ -80,6 +67,20 @@ staticRouter.route("/research").get((req, res) => {
 
 staticRouter.route("/gallery").get((req, res) => {
   return res.render("gallery");
+});
+
+// API for Live Search Suggestions
+staticRouter.get("/suggestions", async (req, res) => {
+  try {
+    // Extract the 'searchText' parameter from the request URL (e.g., /suggestions?searchText=example)
+    const searchText = req.query.searchText;
+    const liveSuggestions = await handleLiveSuggestions(searchText);
+
+    return res.json(liveSuggestions);
+  } catch (error) {
+    console.error("Server error in /suggestions route:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 module.exports = { staticRouter };
