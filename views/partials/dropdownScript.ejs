@@ -1,0 +1,16 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Function to truncate text in dropdown options
+      function truncateDropdownOptions(selector, maxLength) {
+        document.querySelectorAll(selector).forEach((option) => {
+          if (option.textContent.length > maxLength) {
+            option.textContent =
+              option.textContent.substring(0, maxLength - 3) + "..."; // Subtract 3 for ellipsis
+          }
+        });
+      }
+
+      // Apply truncation to all filter dropdowns
+      truncateDropdownOptions(".filter-dropdown option", 50); // Adjust maxLength as needed
+    });
+  </script>

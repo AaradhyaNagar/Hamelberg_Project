@@ -1,0 +1,35 @@
+<script>
+  // Function to fetch search suggestions based on user input
+  async function fetchSuggestions() {
+    const searchText = document.getElementById("title").value.trim(); // Get user input
+    const suggestionsBox = document.getElementById("suggestions"); // Get the suggestions container
+
+    // If input is less than 2 characters, clear the suggestions and stop fetching
+    if (searchText.length < 2) return (suggestionsBox.innerHTML = "");
+
+    try {
+      // Send an asynchronous GET request to the server for suggestions
+      const response = await fetch(`/suggestions?searchText=${searchText}`);
+      const data = await response.json(); // Convert response to JSON
+
+      // Generate clickable suggestion items dynamically
+      suggestionsBox.innerHTML = data
+        .map(({ title }) => {
+          const escapedTitle = title.replace(/"/g, "&quot;"); // Escape double quotes
+          return `<a href="#" class="list-group-item" onclick="selectTitle('${escapedTitle}')">${title}</a>`;
+        })
+        .join(""); // Join array into a single HTML string
+
+      // Show the dropdown only if there are suggestions, otherwise hide it
+      suggestionsBox.style.display = data.length ? "block" : "none";
+    } catch (error) {
+      console.error("Error fetching suggestions:", error); // Log errors in case of failure
+    }
+  }
+
+  // Function to handle suggestion selection
+  function selectTitle(title) {
+    document.getElementById("title").value = title; // Set the selected title in the input field
+    document.getElementById("suggestions").innerHTML = ""; // Clear the suggestions dropdown
+  }
+</script>

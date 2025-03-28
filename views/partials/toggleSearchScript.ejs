@@ -1,0 +1,31 @@
+<script>
+  function toggleSearchContainer() {
+    // Toggle the filterMode value in localStorage between "ON" and "OFF"
+    localStorage.setItem(
+      "filterMode",
+      localStorage.getItem("filterMode") === "ON" ? "OFF" : "ON"
+    );
+
+    // Reload the page and navigate to "/publications" to reset the search state
+    window.location.href = "/publications";
+  }
+
+  // Ensure the correct section (search or filter) is displayed when the page loads
+  document.addEventListener("DOMContentLoaded", function () {
+    // Retrieve the filter mode state from localStorage
+    const filterMode = localStorage.getItem("filterMode");
+
+    // Get references to the search and filter sections
+    const searchSection = document.getElementById("search-section");
+    const filterSection = document.getElementById("filter-section");
+
+    // Show or hide sections based on the stored filter mode
+    if (filterMode === "ON") {
+      searchSection.classList.add("hidden"); // Hide search section
+      filterSection.classList.remove("hidden"); // Show filter section
+    } else {
+      searchSection.classList.remove("hidden"); // Show search section
+      filterSection.classList.add("hidden"); // Hide filter section
+    }
+  });
+</script>

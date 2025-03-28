@@ -9,6 +9,7 @@ const { Journals } = require("../models/journals");
 
 const {
   handleSearchByTitle,
+  handleFilterResults,
   handleLiveSuggestions,
   handleFindYears,
   handleFindAuthors,
@@ -33,12 +34,19 @@ staticRouter.route("/group_members").get(async (req, res) => {
 
 staticRouter.get("/publications/search-by-title", async (req, res) => {
   const title = req.query.title;
+
   const publicationByTitle = await handleSearchByTitle(title);
-  res.render("publications", { publications: publicationByTitle });
+  return res.render("publications", { publications: publicationByTitle });
 });
 
 staticRouter.get("/publications", async (req, res) => {
-  const allPublications = await Publication.find({}).sort({ doc_number: -1 });
+  const { year, journal, author } = req.query;
+
+  const filterResult = handleFilterResults(year, journal, author);
+
+  const allPublications = await Publication.find(filterResult).sort({
+    doc_number: -1,
+  });
   const allDistinctYears = await handleFindYears();
   const allDistinctAuthors = await handleFindAuthors();
   const allDistinctJournals = await handleFindJournals();
@@ -81,6 +89,10 @@ staticRouter.get("/suggestions", async (req, res) => {
     console.error("Server error in /suggestions route:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+staticRouter.get("/test", async (req, res) => {
+  return res.json({ message: "Hello From Test" });
 });
 
 module.exports = { staticRouter };

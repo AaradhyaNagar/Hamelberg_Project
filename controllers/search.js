@@ -1,13 +1,38 @@
 const { Publication } = require("../models/publication");
 
 const handleSearchByTitle = async (title) => {
+  // Escape parentheses and special regex characters in the title string
+  const escapedTitle = title.replace(/([(){}\[\]\\.+\-*?^$|])/g, "\\$1");
+
   const publicationByTitle = await Publication.find({
     // $regex : searchText; It searches for titles that contains the "searchText" string
     //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
-    title: { $regex: title, $options: "i" },
+    title: { $regex: escapedTitle, $options: "i" },
   }).sort({ doc_number: -1 });
 
   return publicationByTitle;
+};
+
+const handleFilterResults = (year, journal, author) => {
+  let filter = {};
+
+  // Apply filters only if the values are not "All" and exist
+  if (year && year !== "All") {
+    filter.year = year;
+  }
+  // Apply filters only if the values are not "All" and exist
+  if (journal && journal !== "All") {
+    // Escape parentheses and special regex characters in the journal string
+    const escapedJournal = journal.replace(/([(){}\[\]\\.+\-*?^$|])/g, "\\$1");
+
+    filter.journal = { $regex: escapedJournal };
+  }
+  // Apply filters only if the values are not "All" and exist
+  if (author && author !== "All") {
+    filter.author = { $regex: author, $options: "i" };
+  }
+
+  return filter;
 };
 
 const handleLiveSuggestions = async (searchText) => {
@@ -44,11 +69,18 @@ const handleFindAuthors = async () => {
 
 const handleFindJournals = async () => {
   const distinctJournals = await Publication.distinct("journal");
-  return distinctJournals;
+
+  // Extract only the journal names before the first comma
+  const journalNames = [
+    ...new Set(distinctJournals.map((journal) => journal.split(",")[0].trim())),
+  ];
+
+  return journalNames;
 };
 
 module.exports = {
   handleSearchByTitle,
+  handleFilterResults,
   handleLiveSuggestions,
   handleFindYears,
   handleFindAuthors,
