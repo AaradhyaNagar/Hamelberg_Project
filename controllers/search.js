@@ -1,20 +1,12 @@
 const { Publication } = require("../models/publication");
 
-const handleSearchByTitle = async (title) => {
-  // Escape parentheses and special regex characters in the title string
-  const escapedTitle = title.replace(/([(){}\[\]\\.+\-*?^$|])/g, "\\$1");
-
-  const publicationByTitle = await Publication.find({
-    // $regex : searchText; It searches for titles that contains the "searchText" string
-    //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
-    title: { $regex: escapedTitle, $options: "i" },
-  }).sort({ doc_number: -1 });
-
-  return publicationByTitle;
-};
-
-const handleFilterResults = (year, journal, author) => {
+const handleSearchResults = (title, year, journal, author) => {
   let filter = {};
+
+  if (title) {
+    const escapedTitle = title.replace(/([(){}\[\]\\.+\-*?^$|])/g, "\\$1");
+    filter.title = { $regex: escapedTitle, $options: "i" };
+  }
 
   // Apply filters only if the values are not "All" and exist
   if (year && year !== "All") {
@@ -29,7 +21,7 @@ const handleFilterResults = (year, journal, author) => {
   }
   // Apply filters only if the values are not "All" and exist
   if (author && author !== "All") {
-    filter.author = { $regex: author, $options: "i" };
+    filter.author = { $regex: author };
   }
 
   return filter;
@@ -62,11 +54,6 @@ const handleFindYears = async () => {
   return distinctYears;
 };
 
-const handleFindAuthors = async () => {
-  const distinctAuthors = await Publication.distinct("author");
-  return distinctAuthors;
-};
-
 const handleFindJournals = async () => {
   const distinctJournals = await Publication.distinct("journal");
 
@@ -78,9 +65,26 @@ const handleFindJournals = async () => {
   return journalNames;
 };
 
+const handleFindAuthors = async () => {
+  const allAuthors = await Publication.distinct("author");
+
+  const distinctAuthorsSet = new Set();
+
+  allAuthors.forEach((author) => {
+    const splitAuthorString = author.split(",").map((author) => author.trim());
+
+    splitAuthorString.forEach((author) => {
+      distinctAuthorsSet.add(author);
+    });
+  });
+
+  const distinctAuthorsArray = Array.from(distinctAuthorsSet).sort();
+
+  return distinctAuthorsArray;
+};
+
 module.exports = {
-  handleSearchByTitle,
-  handleFilterResults,
+  handleSearchResults,
   handleLiveSuggestions,
   handleFindYears,
   handleFindAuthors,

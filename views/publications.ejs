@@ -20,7 +20,7 @@
     >
       <!-- Search Container -->
       <div id="search-section">
-        <form action="/publications/search-by-title" method="GET">
+        <form action="/publications" method="GET">
           <div class="search-container d-flex align-items-center me-3">
             <input
               type="text"
@@ -65,7 +65,7 @@
               <option>All</option>
               <% if (locals.distinctJournals) { %> <%
               distinctJournals.forEach(journal => { %>
-              <option><%= journal %></option>
+              <option value="<%= journal %>"><%= journal %></option>
               <% }); %> <% } %>
             </select>
 
@@ -113,29 +113,7 @@
     </div>
 
     <div class="container mt-4">
-      <% if (locals.publications && publications.length > 0) { %>
-      <h1 class="display-4 fw-bold text-center text-primary">Publications</h1>
-      <p class="lead text-muted text-center" style="font-size: 1.75rem">
-        Explore our latest research contributions
-      </p>
-      <% } else { %>
-
-      <h1 class="display-4 my-3 fw-bold text-center text-danger">
-        No Publications Available
-      </h1>
-      <div class="my-5">
-        <p class="lead text-muted text-center" style="font-size: 1.75rem">
-          We couldn't find any publications at the moment.
-        </p>
-        <p class="lead text-muted text-center" style="font-size: 1.75rem">
-          Try adjusting your filters or check back later for new updates.
-        </p>
-      </div>
-      <p class="lead text-muted text-center" style="font-size: 1.75rem">
-        If you believe this is an error, please
-        <a href="/contact_us" class="text-primary">contact support</a>.
-      </p>
-      <% } %>
+      <%- include("./partials/NoPublicationsFound")%>
 
       <div class="row row-cols-3 g-4 mb-4">
         <% if (locals.publications && publications.length > 0) { %> <%
@@ -176,7 +154,8 @@
       </div>
     </div>
 
-    <%- include("./partials/footer") %> <%- include("./partials/script") %> <%-
+    <%-include("./partials/paginationNavBar")%> <%- include("./partials/footer")
+    %> <%- include("./partials/script") %> <%-
     include("./partials/ajaxScript")%> <%-
     include("./partials/dropdownScript")%> <%-
     include("./partials/toggleSearchScript")%>

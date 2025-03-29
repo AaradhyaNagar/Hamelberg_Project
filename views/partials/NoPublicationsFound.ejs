@@ -1,0 +1,23 @@
+<% if (locals.publications && publications.length > 0) { %>
+    <h1 class="display-4 fw-bold text-center text-primary">Publications</h1>
+    <p class="lead text-muted text-center" style="font-size: 1.75rem">
+      Explore our latest research contributions
+    </p>
+    <% } else { %>
+
+    <h1 class="display-4 my-3 fw-bold text-center text-danger">
+      No Publications Available
+    </h1>
+    <div class="my-5">
+      <p class="lead text-muted text-center" style="font-size: 1.75rem">
+        We couldn't find any publications at the moment.
+      </p>
+      <p class="lead text-muted text-center" style="font-size: 1.75rem">
+        Try adjusting your filters or check back later for new updates.
+      </p>
+    </div>
+    <p class="lead text-muted text-center" style="font-size: 1.75rem">
+      If you believe this is an error, please
+      <a href="/contact_us" class="text-primary">contact support</a>.
+    </p>
+    <% } %>
