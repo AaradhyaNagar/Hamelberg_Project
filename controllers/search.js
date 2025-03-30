@@ -66,21 +66,21 @@ const handleFindJournals = async () => {
 };
 
 const handleFindAuthors = async () => {
-  const allAuthors = await Publication.distinct("author");
+  const allAuthors = await Publication.distinct("author"); // Get all unique author strings
 
-  const distinctAuthorsSet = new Set();
+  const distinctAuthorsSet = new Set(); // Create a Set to store unique author names
 
   allAuthors.forEach((author) => {
-    const splitAuthorString = author.split(",").map((author) => author.trim());
+    const splitAuthorString = author.split(",").map((author) => author.trim()); // Split by comma, trim whitespace
 
     splitAuthorString.forEach((author) => {
-      distinctAuthorsSet.add(author);
+      distinctAuthorsSet.add(author); // Add each author to the Set (only unique values stored)
     });
   });
 
-  const distinctAuthorsArray = Array.from(distinctAuthorsSet).sort();
+  const distinctAuthorsArray = Array.from(distinctAuthorsSet).sort(); // Convert Set to sorted array
 
-  return distinctAuthorsArray;
+  return distinctAuthorsArray; // Return the array of unique authors
 };
 
 module.exports = {
