@@ -25,11 +25,11 @@
 
         // Generate clickable suggestion items dynamically
         suggestionsBox.innerHTML = data
-          .map(({ title }) => {
-            const escapedTitle = title.replace(/"/g, "&quot;"); // Escape double quotes
+          .map((title) => {
+            const escapedTitle = title ? title.replace(/"/g, "&quot;") : "";
             return `<a href="#" class="list-group-item" onclick="selectTitle('${escapedTitle}')">${title}</a>`;
           })
-          .join(""); // Join array into a single HTML string
+          .join("");
 
         // Show the dropdown only if there are suggestions, otherwise hide it
         suggestionsBox.style.display = data.length ? "block" : "none";

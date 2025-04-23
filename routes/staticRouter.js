@@ -9,80 +9,127 @@ const { Journals } = require("../models/journals");
 
 const {
   handleSearchResults,
-  handleLiveSuggestions,
   handleFindYears,
   handleFindAuthors,
   handleFindJournals,
+  handleAllTitles,
 } = require("../controllers/search");
+
+const { redisClient } = require("../utils/redis");
+
+const CACHE_EXPIRATION_TIME = 3600; // Cache for 1 hour (in seconds)
+
+// Utility function to get data from Redis cache or fetch from source.
+async function getOrCache(key, fetchDataFn) {
+  try {
+    // 1. Try to get data from Redis cache.
+    const cachedData = await redisClient.get(key);
+
+    // 2. If data in cache, parse and return.
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+
+    // 4. If not in cache, fetch fresh data.
+    const freshData = await fetchDataFn();
+
+    // 5. Cache fresh data in Redis.
+    await redisClient.setEx(
+      key,
+      CACHE_EXPIRATION_TIME,
+      JSON.stringify(freshData)
+    );
+
+    // 6. Return fresh data.
+    return freshData;
+  } catch (error) {
+    // 7. Handle errors.
+    console.error(`Error getting/caching ${key}:`, error);
+    // 8. Fallback to fetching from DB.
+    return await fetchDataFn();
+  }
+}
 
 staticRouter.route("/").get(async (req, res) => {
   return res.render("home");
 });
 
-staticRouter.route("/former_members").get(async (req, res) => {
-  const allFormerMembers = await FormerMembers.find({}).sort({ _id: 1 });
+staticRouter.get("/former_members", async (req, res) => {
+  const cacheKey = "all_former_members"; // Define a cache key
+  const allFormerMembers = await getOrCache(
+    cacheKey,
+    async () => { // fetchDataFn: Fetch from the database
+      return await FormerMembers.find({}).sort({ _id: 1 });
+    },
+    CACHE_EXPIRATION_TIME // Use your cache expiration time
+  );
   return res.render("former_members", { formerMembers: allFormerMembers });
 });
 
-staticRouter.route("/group_members").get(async (req, res) => {
-  const allGroupMembers = await GroupMembers.find({}).sort({ _id: 1 });
+
+staticRouter.get("/group_members", async (req, res) => {
+  const cacheKey = "all_group_members"; // Define a cache key
+  const allGroupMembers = await getOrCache(
+    cacheKey,
+    async () => { // fetchDataFn: Fetch from the database
+      return await GroupMembers.find({}).sort({ _id: 1 });
+    },
+    CACHE_EXPIRATION_TIME // Use your cache expiration time
+  );
   return res.render("group_members", { groupMembers: allGroupMembers });
 });
 
-// In your staticRouter.js
-
-// In your staticRouter.js
 
 staticRouter.get("/publications", async (req, res) => {
-  // Extract query parameters for search, filter, and pagination
+  // Extract query params (title, year, journal, author, page, limit).
   const { title, year, journal, author, page = 1, limit = 9 } = req.query;
-  // 'page' defaults to 1 if not provided in the query
-  // 'limit' defaults to 9 if not provided, determining how many publications per page
 
-  // Convert page and limit to integers
+  // Parse page and limit to integers.
   const currentPage = parseInt(page);
   const itemsPerPage = parseInt(limit);
 
-  // Calculate the number of documents to skip to get the correct page
-  // For page 1, skip = (1 - 1) * 9 = 0
-  // For page 2, skip = (2 - 1) * 9 = 9
-  // For page 3, skip = (3 - 1) * 9 = 18, and so on.
+  // Calculate number of docs to skip.
   const skip = (currentPage - 1) * itemsPerPage;
 
-  // Call the function to handle search and filter criteria based on the query parameters
+  // Get search/filter criteria.
   const SearchResult = handleSearchResults(title, year, journal, author);
 
-  // Query the database for publications matching the search/filter criteria
-  // .sort({ doc_number: -1 }) orders the results (e.g., by document number in descending order)
-  // .skip(skip) skips the calculated number of documents
-  // .limit(itemsPerPage) retrieves only the specified number of documents for the current page
+  // Query DB for publications, sort, skip, and limit.
   const allPublications = await Publication.find(SearchResult)
     .sort({ doc_number: -1 })
     .skip(skip)
     .limit(itemsPerPage);
 
-  // Count the total number of publications that match the search/filter criteria
-  // This is needed to calculate the total number of pages for pagination
+  // Count total matching publications for pagination.
   const totalPublications = await Publication.countDocuments(SearchResult);
 
-  // Calculate the total number of pages
-  // Math.ceil rounds up to the nearest integer, ensuring we have enough pages to display all results
+  // Calculate total pages.
   const totalPages = Math.ceil(totalPublications / itemsPerPage);
 
-  // Fetch distinct values for the filter dropdowns (these are the same regardless of the page)
-  const allDistinctYears = await handleFindYears();
-  const allDistinctAuthors = await handleFindAuthors();
-  const allDistinctJournals = await handleFindJournals();
+  const allDistinctYears = await getOrCache(
+    "distinct_years",
+    handleFindYears,
+    CACHE_EXPIRATION_TIME
+  );
+  const allDistinctAuthors = await getOrCache(
+    "distinct_authors",
+    handleFindAuthors,
+    CACHE_EXPIRATION_TIME
+  );
+  const allDistinctJournals = await getOrCache(
+    "distinct_journals",
+    handleFindJournals,
+    CACHE_EXPIRATION_TIME
+  );
 
-  // Render the 'publications' view (publications.ejs) and pass the data to it
   res.render("publications", {
-    publications: allPublications, // The publications for the current page
+    publications: allPublications,
     distinctYears: allDistinctYears,
     distinctAuthors: allDistinctAuthors,
     distinctJournals: allDistinctJournals,
-    currentPage: currentPage, // The current page number
-    totalPages: totalPages, // The total number of pages
-    query: req.query, // The original query parameters, useful for preserving search/filter when navigating pages
+    currentPage: currentPage,
+    totalPages: totalPages,
+    query: req.query,
   });
 });
 
@@ -108,7 +155,22 @@ staticRouter.route("/gallery").get((req, res) => {
 staticRouter.get("/suggestions", async (req, res) => {
   // Extract the 'searchText' parameter from the request URL (e.g., /suggestions?searchText=example)
   const searchText = req.query.searchText;
-  const liveSuggestions = await handleLiveSuggestions(searchText);
+
+  //   // If the query is empty (user hasn't typed anything), return an empty array
+  if (!searchText) return res.json([]);
+
+  const allTitles = await getOrCache(
+    "all_titles",
+    handleAllTitles,
+    CACHE_EXPIRATION_TIME
+  );
+
+  const liveSuggestions = allTitles
+    .map((obj) => obj.title)
+    .filter((title) => title.toLowerCase().includes(searchText.toLowerCase()))
+    .slice(0, 5);
+
+  console.log(liveSuggestions);
 
   return res.json(liveSuggestions);
 });

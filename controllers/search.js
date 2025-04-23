@@ -27,25 +27,12 @@ const handleSearchResults = (title, year, journal, author) => {
   return filter;
 };
 
-const handleLiveSuggestions = async (searchText) => {
-  // If the query is empty (user hasn't typed anything), return an empty array
-  if (!searchText) return res.json([]);
+const handleAllTitles = async () => {
+  const allTitles = await Publication.find({}, { title: 1, _id: 0 });
 
-  try {
-    // $regex : searchText; It searches for titles that contains the "searchText" string
-    //$options : "i"; It enables Case-insensitive matching (e.g., "AI" matches "ai" and "Ai").
-    const results = await Publication.find(
-      { title: { $regex: searchText, $options: "i" } },
-      // If { title : 1 } is not mentioned it will return the whole database object with the _id
-      // To make the response lightweight, we omit the _id with { _id : 0 }
-      { title: 1, _id: 0 }
-    ).limit(5);
+  const allTitlesArray = Array.from(allTitles);
 
-    return results;
-  } catch (error) {
-    console.error("Error fetching suggestions:", error);
-    return []; // Returning an empty array in case of failure
-  }
+  return allTitlesArray;
 };
 
 const handleFindYears = async () => {
@@ -54,15 +41,30 @@ const handleFindYears = async () => {
   return distinctYears;
 };
 
+// const handleFindJournals = async () => {
+//   const distinctJournals = await Publication.distinct("journal");
+
+//   // Extract only the journal names before the first comma
+//   const journalNames = [
+//     ...new Set(distinctJournals.map((journal) => journal.split(",")[0].trim())),
+//   ];
+
+//   return journalNames;
+// };
+
 const handleFindJournals = async () => {
-  const distinctJournals = await Publication.distinct("journal");
+  const distinctJournals = await Publication.distinct("journal"); // Get all unique journals
 
-  // Extract only the journal names before the first comma
-  const journalNames = [
-    ...new Set(distinctJournals.map((journal) => journal.split(",")[0].trim())),
-  ];
+  const distinctJournalsSet = new Set();
 
-  return journalNames;
+  distinctJournals.forEach((journal) => {
+    const splitJournalString = journal.split(",")[0].trim();
+    distinctJournalsSet.add(splitJournalString);
+  });
+
+  const distinctJournalsArray = Array.from(distinctJournalsSet).sort();
+
+  return distinctJournalsArray;
 };
 
 const handleFindAuthors = async () => {
@@ -85,7 +87,7 @@ const handleFindAuthors = async () => {
 
 module.exports = {
   handleSearchResults,
-  handleLiveSuggestions,
+  handleAllTitles,
   handleFindYears,
   handleFindAuthors,
   handleFindJournals,
